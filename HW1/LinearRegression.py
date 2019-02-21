@@ -12,6 +12,8 @@ def ReadTrainingData(path):
     X = np.concatenate([data[i : i + 9]       for i in range(num)], axis = 0).reshape((num, 9))
     Y = np.concatenate([data[i + 9 : i + 10]  for i in range(num)], axis = 0).reshape((num, 1))
 
+    X = np.concatenate([np.ones((num, 1)), X], axis = 1)
+
     return X, Y
 
 def Grad(w, X, Y):
@@ -21,12 +23,14 @@ X, Y = ReadTrainingData("data/train.csv")
 
 num, dim = X.shape
 
-eta = 1e-8
+eta = 1e-7
 iterationTimes = int(1e5) 
 
 w = np.zeros((1, dim))
 
 for epoch in range(iterationTimes):
+    if epoch % 1000 == 0:
+        print("--- Epoch: %5d ---" % epoch)
     w -= eta * Grad(w, X, Y)
 
 print(w)
