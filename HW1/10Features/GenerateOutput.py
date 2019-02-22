@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import pandas as pd
 
@@ -8,8 +9,8 @@ def ReadTrainingData(path):
     num, dim = X.shape
     return np.concatenate([np.ones((num, 1)), X], axis = 1)
 
-w = np.load("123.npy")
-X = ReadTrainingData("data/test.csv")
+w = np.load("result.npy")
+X = ReadTrainingData("../data/test.csv")
 Y = np.dot(X, w.T)
 
 df = pd.DataFrame(Y, columns = ["value"])

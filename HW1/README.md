@@ -2,6 +2,8 @@
 
 ###### By: Wu-Jun Pei(B06902029)
 
+### [Kaggle Website](https://www.kaggle.com/c/ml2019spring-hw1)
+
 ### 2/21
 
 #### 1st Attempt
@@ -25,3 +27,19 @@ Linear Regression with Gradient Descent
 - Features: PM2.5 values of previous 9 hours (with bias $x_0$)
 - Optimizer: None
 - Score = `5.93022`
+
+### 2/22
+
+#### Cleaning up the data
+- [Link](http://ocefpaf.github.io/python4oceanographers/blog/2013/05/20/spikes/)
+
+#### 1st Attempt
+
+Linear Regression with Gradient Descent
+- 10 features (PM2.5 of the previous 9 hours and the bias)
+- Parameters
+    - Learning Rate $\eta$: `1e-5`
+    - Iteration Time: `1e6`
+- Optimizer: None
+- Score: `5.90261`
+
