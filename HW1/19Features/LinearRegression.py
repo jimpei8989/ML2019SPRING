@@ -8,7 +8,7 @@ def ReadTrainingData(path):
     df = pd.read_csv(path, encoding="big5").drop(["測站"], axis = 1)
     raw_data = df.drop(columns = ["日期", "測項"]).values.astype(np.float64)
     data = np.concatenate([raw_data[18 * d : 18 * (d + 1), :].T      for d in range(240)], axis = 0)
-    X = np.concatenate([data[480*m + h : 480*m + h+9, 9 : 10].reshape((1, -1)) for h in range(471) for m in range(12)], axis = 0)
+    X = np.concatenate([data[480*m + h : 480*m + h+9, 8 : 10].reshape((1, -1)) for h in range(471) for m in range(12)], axis = 0)
     Y = np.concatenate([data[480*m + h+9, 9].reshape((1, -1))             for h in range(471) for m in range(12)], axis = 0)
     return np.concatenate([np.ones((X.shape[0], 1)), X], axis = 1), Y
 
@@ -25,8 +25,8 @@ X, Y = ReadTrainingData("../data/data.csv")
 
 num, dim = X.shape
 
-eta = 1e-4
-iterationTimes = int(1e5)
+eta = 1e-5
+iterationTimes = int(5e5)
 
 w = np.zeros((1, dim))
 
