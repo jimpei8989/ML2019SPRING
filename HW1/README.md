@@ -75,7 +75,7 @@ Linear Regression with Gradient Descent
 - Optimizer: None
 - Score: `6.05401`
 
-### 3rd Attempt
+#### 3rd Attempt
 
 Linear Regression with Gradient Descent
 - 19 features (PM2.5 and PM10 of the previous 9 hours and the bias)
@@ -85,7 +85,7 @@ Linear Regression with Gradient Descent
 - Optimizer: None
 - Score: `5.95872`
 
-### 4th Attempt
+#### 4th Attempt
 
 Linear Regression with Gradient Descent
 - 19 features (PM2.5 and PM10 of the previous 9 hours and the bias)
@@ -94,6 +94,39 @@ Linear Regression with Gradient Descent
     - Iteration Time: `1e5`
 - Optimizer: None
 - Score: `5.90261`
+
+#### 5th Attempt
+
+Linear Regression with Gradient Descent
+- 163 features (all values of the previous 9 hours and the bias)
+- Parameters
+    - Learning Rate $\eta$: `1e-6`
+    - Iteration Time: `1e4`
+- Optimizer: None
+- Score: `5.79359`
+
+### 2/25
+
+#### 1st Attempt
+
+Linear Regression with Gradient Descent
+- 163 features (all values of the previous 9 hours and the bias)
+- Parameters
+    - Learning Rate $\eta$: `1e-6`
+    - Iteration Time: `1e5`
+- Optimizer: None
+- Score: `5.79359`
+
+#### 2nd Attempt
+
+Linear Regression with Gradient Descent
+- 163 features (all values of the previous 9 hours and the bias)
+- Parameters
+    - Learning Rate $\eta$: `1e-6`
+    - Iteration Time: `1e5`
+- Optimizer:
+    - Feature Scaling (Standardization)
+- Score: `5.79359`
 
 
 
