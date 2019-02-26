@@ -6,7 +6,7 @@ import pandas as pd
 #AMB_TEMP,CH4,CO,NMHC,NO,NO2,NOx,O3,PM10,PM2.5,RAINFALL,RH,SO2,THC,WD_HR,WIND_DIREC,WIND_SPEED,WS_HR
 
 def ReadTrainingData(path):
-    df = pd.read_csv(path, encoding="big5").drop(["測站"], axis = 1)
+    df = pd.read_csv(path, encoding="big5").drop(["測站"], axis = 1).replace("NR", 0)
     raw_data = df.drop(columns = ["日期", "測項"]).values.astype(np.float64)
     data = np.concatenate([raw_data[18 * d : 18 * (d + 1), :].T for d in range(20 * 12)], axis = 0)
 
@@ -30,17 +30,21 @@ def Grad(w, X, Y):
 
 name = time.strftime("%m-%d_%H-%M", time.gmtime())
 
-X, Y, mean, stdd = ReadTrainingData("../data/data.csv")
+X, Y, mean, stdd = ReadTrainingData("../data/train.csv")
+
+XTX = np.dot(X.T, X)
+XTY = np.dot(X.T, Y)
 
 num, dim = X.shape
 
-eta = 1e-2
-iterationTimes = int(1e4)
+eta = 1e-6
+iterationTimes = int(1e6)
 
 w = np.zeros((1, dim))
 
 for epoch in range(iterationTimes):
-    w -= eta * Grad(w, X, Y)
+    grad = np.dot(XTX, w.T) - XTY
+    w -= eta * grad.reshape((1, -1))
     if epoch % 1000 == 0:
         print("- Epoch: %6d, loss = %f, RMSE(Grad) = %f" % (epoch, Loss(w, X, Y), RMSE(Grad(w, X, Y))))
 

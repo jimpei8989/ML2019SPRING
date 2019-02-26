@@ -122,12 +122,36 @@ Linear Regression with Gradient Descent
 Linear Regression with Gradient Descent
 - 163 features (all values of the previous 9 hours and the bias)
 - Parameters
-    - Learning Rate $\eta$: `1e-6`
-    - Iteration Time: `1e5`
+    - Learning Rate $\eta$: `1e-3`
+    - Iteration Time: `1e4`
 - Optimizer:
     - Feature Scaling (Standardization)
 - Score: `5.79359`
 
+#### 3rd Attempt
 
+Linear Regression with Gradient Descent
+- 163 features (all values of the previous 9 hours and the bias)
+- Parameters
+    - Learning Rate $\eta$: `1e-2`
+    - Iteration Time: `1e4`
+- Optimizer:
+    - Feature Scaling (Standardization)
+- Score: `5.66257`
+
+#### ?th Attempt
+
+Tried squaring the 9 data(PM2.5 of the previous 9 hours), Ein was large and I quitted QaQ
+
+#### 4th Attempt
+
+Linear Regression with Gradient Descent
+- 10 features (PM2.5 of the previous 9 hours and the bias)
+- Parameters
+    - Learning Rate $\eta$: `1e-2`
+    - Iteration Time: `1e4`
+- Optimizer:
+    - Feature Scaling (Standardization)
+- Score: `5.90399`
 
 
