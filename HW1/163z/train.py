@@ -25,26 +25,26 @@ def GradientDescent(X, Y, eta, epochs):
         grad = np.dot(XTX, w.T) - XTY
         sigma += np.dot(grad.T, grad)
         w -= eta * grad.reshape((1, -1)) / np.sqrt(sigma)
-        if epoch % 100 == 0:
+        if epoch % 1000 == 0:
             print("- Epoch: %6d, loss = %f, RMSE(Grad) = %f" % (epoch, Loss(w, X, Y), RMSE(grad)))
 
     return w
 
 if __name__ == "__main__":
-    with np.load("data/train.npz") as npfile:
+    with np.load("../data/ztrain.npz") as npfile:
         trainX, trainY = npfile['X'], npfile['Y']
 
-    eta = 1e-6
-    epochs = 1e6
+    eta = 1e0
+    epochs = 1e5
+
     w = GradientDescent(trainX, trainY, eta = eta, epochs = epochs)
 
-    with np.load("data/test.npz") as npfile:
+    with np.load("../data/ztest.npz") as npfile:
         testX = npfile['X']
         predict_Y = np.dot(testX, w.T)
         testN = testX.shape[0]
 
-    df = pd.DataFrame(predict_Y, columns = ["values"])
+    df = pd.DataFrame(predict_Y, columns = ["value"])
     df.insert(loc = 0, column = "id",value = ["id_"+str(i) for i in range(testN)])
     print(df)
-    df.to_csv("results/.csv", index = False)
-
+    df.to_csv("result.csv", index = False)
