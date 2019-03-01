@@ -12,7 +12,7 @@ def ReadTrainingData(path, std = False):
     stdd = np.std(data, axis = 0).reshape((1, -1))  if std is True else np.ones((1, data.shape[1])) 
     data = (data - mean) / stdd
 
-    X = np.concatenate([data[480*m + h : 480*m + h+9, :].reshape((1, -1)) for h in range(471) for m in range(12)], axis = 0)
+    X = np.concatenate([data[480*m + h : 480*m + h+9, 9].reshape((1, -1)) for h in range(471) for m in range(12)], axis = 0)
     Y = np.concatenate([data[480*m + h+9, 9].reshape((1, -1))             for h in range(471) for m in range(12)], axis = 0)
     return np.concatenate([np.ones((X.shape[0], 1)), X], axis = 1), Y, mean, stdd
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     trainX, trainY, mean, stdd = ReadTrainingData("../data/train.csv")
 
     eta = 1e3
-    epochs = 1e6
+    epochs = 2e5
 
     w = GradientDescent(trainX, trainY, eta = eta, epochs = epochs)
     np.savez("result.npz", w = w, mean = mean, stdd = stdd)

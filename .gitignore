@@ -2,3 +2,4 @@
 *.swo
 *.csv
 data/
+.DS_Store
