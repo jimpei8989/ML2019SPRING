@@ -34,7 +34,7 @@ def GradientDescent(X, Y, eta, epochs):
         grad = np.dot(XTX, w.T) - XTY
         sigma += np.dot(grad.T, grad)
         w -= eta * grad.reshape((1, -1)) / np.sqrt(sigma)
-        if (epoch + 1) % 1000 == 0:
+        if epoch % 5000 == 0:
             print("- Epoch: %6d, loss = %f, RMSE(Grad) = %f" % (epoch, Loss(w, X, Y), RMSE(grad)))
     return w
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     trainX, trainY, mean, stdd = ReadTrainingData("../data/train.csv")
 
     eta = 1e3
-    epochs = 7e5
+    epochs = 1e6
 
     w = GradientDescent(trainX, trainY, eta = eta, epochs = epochs)
     np.savez("result.npz", w = w, mean = mean, stdd = stdd)

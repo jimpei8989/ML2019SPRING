@@ -5,18 +5,18 @@ import pandas as pd
 
 def ReadTrainingData(path, std = False):
     df = pd.read_csv(path, encoding="big5").drop(["測站"], axis = 1).replace("NR", 0)
-    raw_data = df.drop(columns = ["日期", "測項"]).values.astype(np.float64)
-    data = np.concatenate([raw_data[18 * d : 18 * (d + 1), :].T for d in range(20 * 12)], axis = 0)
+    raw_rdata = df.drop(columns = ["日期", "測項"]).values.astype(np.float64)
+    rdata = np.concatenate([raw_rdata[18 * d : 18 * (d + 1), :].T for d in range(20 * 12)], axis = 0)
 
-    mean = np.mean(data, axis = 0).reshape((1, -1)) if std is True else np.zeros((1, data.shape[1]))
-    stdd = np.std(data, axis = 0).reshape((1, -1))  if std is True else np.ones((1, data.shape[1])) 
-    data = (data - mean) / stdd
+    mean = np.mean(rdata, axis = 0).reshape((1, -1)) if std is True else np.zeros((1, rdata.shape[1]))
+    stdd = np.std(rdata, axis = 0).reshape((1, -1))  if std is True else np.ones((1, rdata.shape[1])) 
+    zdata = (rdata - mean) / stdd
 
-    tmpX = data[:, 9].reshape((-1, 1))
+    tmpX = zdata[:, 9].reshape((-1, 1))
     tmpX = np.concatenate([tmpX, tmpX * tmpX], axis = 1)
 
     X = np.concatenate([tmpX[480*m + h : 480*m + h+9, :].reshape((1, -1)) for h in range(471) for m in range(12)], axis = 0)
-    Y = np.concatenate([data[480*m + h+9, 9].reshape((1, -1))             for h in range(471) for m in range(12)], axis = 0)
+    Y = np.concatenate([rdata[480*m + h+9, 9].reshape((1, -1))             for h in range(471) for m in range(12)], axis = 0)
     return np.concatenate([np.ones((X.shape[0], 1)), X], axis = 1), Y, mean, stdd
 
 def RMSE(x):
@@ -31,21 +31,25 @@ def GradientDescent(X, Y, eta, epochs):
     XTY = np.dot(X.T, Y)
 
     w = np.zeros((1, dim))
-    sigma = np.float64(0)
+    beta1, beta2, eps = 0.9, 0.9999, 1e-8
+    m, v = np.float64(0), np.float64(0)
 
-    for epoch in range(int(epochs)):
+    for epoch in range(1, int(epochs) + 1):
         grad = np.dot(XTX, w.T) - XTY
-        sigma += np.dot(grad.T, grad)
-        w -= eta * grad.reshape((1, -1)) / np.sqrt(sigma)
-        if epoch % 5000 == 0:
+        m = beta1 * m + (1 - beta1) * grad
+        v = beta2 * v + (1 - beta2) * (grad * grad)
+        mhat = (m / (1 - (beta1 ** epoch))).reshape((1, -1))
+        vhat = (v / (1 - (beta2 ** epoch))).reshape((1, -1))
+        w -= eta / (np.sqrt(vhat) + eps) * mhat
+        if epoch % 1000 == 0:
             print("- Epoch: %6d, loss = %f, RMSE(Grad) = %f" % (epoch, Loss(w, X, Y), RMSE(grad)))
     return w
 
 if __name__ == "__main__":
     trainX, trainY, mean, stdd = ReadTrainingData("../data/train.csv")
 
-    eta = 1e2
-    epochs = 1e7
+    eta = 1e-4
+    epochs = 5e5
 
     w = GradientDescent(trainX, trainY, eta = eta, epochs = epochs)
     np.savez("result.npz", w = w, mean = mean, stdd = stdd)

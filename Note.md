@@ -65,3 +65,41 @@ $\theta^{t + 1} = \theta^{t} - \eta \nabla L(\theta^t)$
     x_i^r \leftarrow \frac{x_i^r - m_i}{\sigma_i}
     $$
 
+### Extra Reading
+
+-   [Reference](https://medium.com/雞雞與兔兔的工程世界/機器學習ml-note-sgd-momentum-adagrad-adam-optimizer-f20568c968db)
+-   [Reference](http://ruder.io/optimizing-gradient-descent/index.html)
+
+#### Momentum
+
+-   Concept of momentum, accelerates in relevant direction
+
+-   Iterative step:
+    $$
+    \begin{align*}
+    v_t & \leftarrow \beta v_{t - 1} - \eta \frac{\part L}{\part W} \\
+    w & \leftarrow w + v_t
+    \end{align*}
+    $$
+
+-   $\beta$ is often set to `0.9`
+
+#### Adam
+
+-   Combination of *Adagrad* and *Momentum*
+
+-   Iterative step:
+    $$
+    \begin{align*}
+    m_t & \leftarrow\beta_1 m_{t - 1} + (1 - \beta_1) \frac{\part L}{\part W} \\
+    v_t & \leftarrow \beta_2 v_{t - 1} + (1 - \beta_2) (\frac{\part L}{\part W})^2 \\
+    
+    \hat{m_t} &= \frac{m_t}{1 - \beta^t_1} \\
+    \hat{v_t} &= \frac{v_t}{1 - \beta^t_2} \\
+    
+    w_{t + 1} &\leftarrow w_t - \frac{\eta}{\sqrt{\hat{v_t}} + \epsilon} \hat{m_t}
+    \end{align*}
+    $$
+
+-   $\beta_1, \beta_2, \epsilon$ is often set to `0.9, 0.9999, 1e-8` respectively.
+

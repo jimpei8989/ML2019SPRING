@@ -8,6 +8,8 @@ def ReadTrainingData(path, std = False):
     raw_data = df.drop(columns = ["日期", "測項"]).values.astype(np.float64)
     data = np.concatenate([raw_data[18 * d : 18 * (d + 1), :].T for d in range(20 * 12)], axis = 0)
 
+    # Cleanup The Data
+
     mean = np.mean(data, axis = 0).reshape((1, -1)) if std is True else np.zeros((1, data.shape[1]))
     stdd = np.std(data, axis = 0).reshape((1, -1))  if std is True else np.ones((1, data.shape[1])) 
     data = (data - mean) / stdd

@@ -6,14 +6,14 @@ import pandas as pd
 def ReadTrainingData(path, std = False):
     df = pd.read_csv(path, encoding="big5").drop(["測站"], axis = 1).replace("NR", 0)
     raw_data = df.drop(columns = ["日期", "測項"]).values.astype(np.float64)
-    data = np.concatenate([raw_data[18 * d : 18 * (d + 1), :].T for d in range(20 * 12)], axis = 0)
+    rdata = np.concatenate([raw_data[18 * d : 18 * (d + 1), :].T for d in range(20 * 12)], axis = 0)
 
-    mean = np.mean(data, axis = 0).reshape((1, -1)) if std is True else np.zeros((1, data.shape[1]))
-    stdd = np.std(data, axis = 0).reshape((1, -1))  if std is True else np.ones((1, data.shape[1])) 
-    data = (data - mean) / stdd
+    mean = np.mean(rdata, axis = 0).reshape((1, -1)) if std is True else np.zeros((1, rdata.shape[1]))
+    stdd = np.std(rdata, axis = 0).reshape((1, -1))  if std is True else np.ones((1, rdata.shape[1])) 
+    zdata = (rdata - mean) / stdd
 
-    X = np.concatenate([data[480*m + h : 480*m + h+9, :].reshape((1, -1)) for h in range(471) for m in range(12)], axis = 0)
-    Y = np.concatenate([data[480*m + h+9, 9].reshape((1, -1))             for h in range(471) for m in range(12)], axis = 0)
+    X = np.concatenate([zdata[480*m + h : 480*m + h+9, 9].reshape((1, -1)) for h in range(471) for m in range(12)], axis = 0)
+    Y = np.concatenate([rdata[480*m + h+9, 9].reshape((1, -1))             for h in range(471) for m in range(12)], axis = 0)
     return np.concatenate([np.ones((X.shape[0], 1)), X], axis = 1), Y, mean, stdd
 
 def RMSE(x):
@@ -42,11 +42,12 @@ def GradientDescent(X, Y, eta, epochs):
             print("- Epoch: %6d, loss = %f, RMSE(Grad) = %f" % (epoch, Loss(w, X, Y), RMSE(grad)))
     return w
 
-if __name__ == "__main__":
-    trainX, trainY, mean, stdd = ReadTrainingData("../data/train.csv")
 
-    eta = 1e-4
-    epochs = 1e6
+if __name__ == "__main__":
+    trainX, trainY, mean, stdd = ReadTrainingData("../data/train.csv", True)
+
+    eta = 1e-3
+    epochs = 1e5
 
     w = GradientDescent(trainX, trainY, eta = eta, epochs = epochs)
     np.savez("result.npz", w = w, mean = mean, stdd = stdd)
