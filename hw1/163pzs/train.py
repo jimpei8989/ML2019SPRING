@@ -57,6 +57,7 @@ def GradientDescent(X, Y, eta, epochs, lamb = 0):
 
 if __name__ == "__main__":
     trainX, trainY, mean, stdd = ReadTrainingData("../data/train.csv", std = True)
+    print(trainX.shape)
 
     eta = 1e-3
     epochs = 1e5
