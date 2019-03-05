@@ -19,7 +19,7 @@ def ReadTestingData(path, mean, stdd):
     cols = [1, 2, 3, 4, 5, 6, 7, 8, 9, 12]
 
     tmpX = np.concatenate([zdata[:, col].reshape((-1, 1)) for col in cols], axis = 1)
-    zdata = np.concatenate([zdata, tmpX * tmpX], axis = 1)
+    # zdata = np.concatenate([zdata, tmpX * tmpX], axis = 1)
 
     X = np.concatenate([zdata[9 * i : 9 * (i + 1), :].reshape((1, -1)) for i in range(num)], axis = 0)
     return np.concatenate([np.ones((num, 1)), X], axis = 1), X.shape[0]

@@ -22,7 +22,7 @@ def ReadTrainingData(path, std = False):
 
     cols = [1, 2, 3, 4, 5, 6, 7, 8, 9, 12]
     tmpX = np.concatenate([zdata[:, col].reshape((-1, 1)) for col in cols], axis = 1)
-    zdata = np.concatenate([zdata, tmpX * tmpX], axis = 1)
+    # zdata = np.concatenate([zdata, tmpX * tmpX], axis = 1)
 
     X = np.concatenate([zdata[480*m + h : 480*m + h+9, :].reshape((1, -1)) for h in range(471) for m in range(12)], axis = 0)
     Y = np.concatenate([rdata[480*m + h+9, 9].reshape((1, -1))             for h in range(471) for m in range(12)], axis = 0)
@@ -35,7 +35,7 @@ def RMSE(x):
 def Loss(w, X, Y):
     return (np.sum((np.dot(X, w.T) - Y) * (np.dot(X, w.T) - Y)) / X.shape[0]) ** 0.5
 
-def GradientDescent(X, Y, eta, epochs):
+def GradientDescent(X, Y, eta, epochs, lamb = 0):
     num, dim = X.shape
     XTX = np.dot(X.T, X)
     XTY = np.dot(X.T, Y)
@@ -45,7 +45,7 @@ def GradientDescent(X, Y, eta, epochs):
     m, v = np.float64(0), np.float64(0)
 
     for epoch in range(1, int(epochs) + 1):
-        grad = np.dot(XTX, w.T) - XTY
+        grad = np.dot(XTX, w.T) - XTY + 2 * lamb / num * w.T
         m = beta1 * m + (1 - beta1) * grad
         v = beta2 * v + (1 - beta2) * (grad * grad)
         mhat = (m / (1 - (beta1 ** epoch))).reshape((1, -1))
@@ -59,9 +59,10 @@ if __name__ == "__main__":
     trainX, trainY, mean, stdd = ReadTrainingData("../data/train.csv", std = True)
 
     eta = 1e-3
-    epochs = 2e5
+    epochs = 1e5
+    lamb = 1e5
 
-    w = GradientDescent(trainX, trainY, eta = eta, epochs = epochs)
+    w = GradientDescent(trainX, trainY, eta = eta, epochs = epochs, lamb = lamb)
     print(w)
     
     np.savez("result.npz", w = w, mean = mean, stdd = stdd)
