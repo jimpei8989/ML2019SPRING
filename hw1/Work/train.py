@@ -62,16 +62,15 @@ if __name__ == "__main__":
     COLUMNS = ["lambda", "Ein1", "Eout1", "Ein2", "Eout2"] + [n + "^1" for n in names] + [n + "^2" for n in names]
     record = pd.DataFrame(columns = COLUMNS)
     
-
-    for possible in product([0, 1], repeat = 10):
+    _ = 0
+    for possible in product([0, 1], repeat = 8):
         line_cols = [l for l in range(18)]
-        quad_cols = [8, 9, 10, 13] + [i for i in range(8) if possible[i] is 1] + [i + 3 for i in range(8, 10) if possible[i] is 1]
-        print(quad_cols)
+        quad_cols = [8, 9, 10, 13] + [i + 1 for i in range(7) if possible[i] is 1] + [i + 5 for i in range(7, 8) if possible[i] is 1]
         selected = line_cols + sorted([q + 18 for q in quad_cols])
 
         X1, Y1, X2, Y2 = SelectData(X, Y, selected = selected)
         
-        for i in range(12):
+        for i in range(4, 12):
             eta = 1e-3
             epochs = 1e5
             lamb = 10 ** (i / 2)
@@ -82,4 +81,6 @@ if __name__ == "__main__":
             Ein2, Eout2 = (float(Loss(w2, X2, Y2)), float(Loss(w2, X1, Y1)))
             record = record.append(pd.Series([lamb, Ein1, Eout1, Ein2, Eout2] + [1 if l in line_cols else 0 for l in range(18)] + [1 if q in quad_cols else 0 for q in range(18)], index = COLUMNS), ignore_index = True)
 
-    record.to_csv("record.csv")
+        _ += 1
+        print("--- %d / 512" % _)
+        record.to_csv("record.csv")
