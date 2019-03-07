@@ -3,37 +3,40 @@ import pandas as pd
 
 #AMB_TEMP,CH4,CO,NMHC,NO,NO2,NOx,O3,PM10,PM2.5,RAINFALL,RH,SO2,THC,WD_HR,WIND_DIREC,WIND_SPEED,WS_HR
 
-def ReadTrainingData(path, std = False):
+def ReadTrainingData(path, std = False, selected = [l for l in range(18)]):
     df = pd.read_csv(path, encoding="big5").drop(["測站"], axis = 1).replace("NR", 0)
     raw_data = df.drop(columns = ["日期", "測項"]).values.astype(np.float64)
-
-    # rdata is num * dim array
     rdata = np.concatenate([raw_data[18 * d : 18 * (d + 1), :].T for d in range(20 * 12)], axis = 0)
 
     for m in range(12):
         for h in range(480):
             if rdata[480*m + h, 9] == -1:
-                rdata[480*m + h, 9] = 0 if h == 0 else rdata[480*m + h-1, 9]
-
+                hp = 0
+                while hp < 480 and rdata[480*m + hp] is not -1:
+                    break
+                d = hp - h
+                rdata[480*m + h, 9] = 0 if h == 0 else (rdata[480*m + h-1, 9] * (d-1) / d) + (rdata[480*m + hp, 9] if hp != 480 else 1) / d
 
     mean = np.mean(rdata, axis = 0).reshape((1, -1)) if std is True else np.zeros((1, rdata.shape[1]))
     stdd = np.std(rdata, axis = 0).reshape((1, -1))  if std is True else np.ones((1, rdata.shape[1])) 
     zdata = (rdata - mean) / stdd
 
-    cols = [1, 2, 3, 4, 5, 6, 7, 8, 9, 12]
-    tmpX = np.concatenate([zdata[:, col].reshape((-1, 1)) for col in cols], axis = 1)
-    # zdata = np.concatenate([zdata, tmpX * tmpX], axis = 1)
+    X = np.concatenate([zdata, zdata * zdata], axis = 1)
+    Y = rdata[:, 9].reshape((-1, 1))
+    return mean, stdd, X, Y
 
-    X = np.concatenate([zdata[480*m + h : 480*m + h+9, :].reshape((1, -1)) for h in range(471) for m in range(12)], axis = 0)
-    Y = np.concatenate([rdata[480*m + h+9, 9].reshape((1, -1))             for h in range(471) for m in range(12)], axis = 0)
-
-    return np.concatenate([np.ones((X.shape[0], 1)), X], axis = 1), Y, mean, stdd
+def SelectData(X, Y, selected = [l for l in range(18)], cut = 360):
+    X1 = np.concatenate([X[480*m + h: 480*m + h+9, :].reshape((1, -1)) for h in range(0, cut-9) for m in range(12)], axis = 0)
+    Y1 = np.concatenate([Y[480*m + h + 9, :] for h in range(0, cut-9)  for m in range(12)], axis = 0).reshape((-1, 1))
+    X2 = np.concatenate([X[480*m + h: 480*m + h+9, :].reshape((1, -1)) for h in range(cut, 471) for m in range(12)], axis = 0)
+    Y2 = np.concatenate([Y[480*m + h + 9, :] for h in range(cut, 471)  for m in range(12)], axis = 0).reshape((-1, 1))
+    return np.concatenate([np.ones((X1.shape[0], 1)), X1], axis = 1), Y1, np.concatenate([np.ones((X2.shape[0], 1)), X2], axis = 1), Y2
 
 def RMSE(x):
     return (np.dot(x.reshape((1, -1)), x.reshape((-1, 1))) / x.reshape((1, -1)).shape[0]) ** 0.5
 
 def Loss(w, X, Y):
-    return (np.sum((np.dot(X, w.T) - Y) * (np.dot(X, w.T) - Y)) / X.shape[0]) ** 0.5
+    return (np.dot((np.dot(X, w.T) - Y).T, (np.dot(X, w.T) - Y)) / X.shape[0]) ** 0.5
 
 def GradientDescent(X, Y, eta, epochs, lamb = 0):
     num, dim = X.shape
@@ -56,14 +59,20 @@ def GradientDescent(X, Y, eta, epochs, lamb = 0):
     return w
 
 if __name__ == "__main__":
-    trainX, trainY, mean, stdd = ReadTrainingData("../data/train.csv", std = True)
-    print(trainX.shape)
+    mean, stdd, X, Y = ReadTrainingData("../data/train.csv", std = True)
 
+    line_cols = [l for l in range(14)]
+    quad_cols = [8, 9, 10, 14]
+    selected = line_cols + sorted([q + 18 for q in quad_cols])
+
+    trainX, trainY, validX, validY = SelectData(X, Y, selected = selected)
+    
     eta = 1e-3
     epochs = 1e5
-    lamb = 1e4
+    lamb = 0
 
     w = GradientDescent(trainX, trainY, eta = eta, epochs = epochs, lamb = lamb)
-    print(w)
-    
+    Ein, Evalid = (float(Loss(w, trainX, trainY)), float(Loss(w, validX, validY)))
+    print("Ein = %f, Evalid = %f" % (Ein, Evalid))
+
     np.savez("result.npz", w = w, mean = mean, stdd = stdd)

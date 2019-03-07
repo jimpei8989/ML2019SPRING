@@ -8,7 +8,16 @@
 -   [Course Website](http://speech.ee.ntu.edu.tw/~tlkagk/courses_ML19.html)
 -   [Youtube Channel](https://www.youtube.com/playlist?list=PLJV_el3uVTsPy9oCRY30oBPNLCo89yu49)
 
-## Section 3 - Gradient Descent
+## Lecture 2 - Where Does The Error Come From
+
+-   The error comes from bias and variance.
+    -   Simple Model $\Leftrightarrow$ Small Variance
+    -   Complicated Model $\Leftrightarrow$ Small Bias
+
+-   Trade-off between bias and variance
+    -   
+
+## Lecture 3 - Gradient Descent
 
 ### Notations
 
@@ -54,7 +63,7 @@ $\theta^{t + 1} = \theta^{t} - \eta \nabla L(\theta^t)$
 
 #### Stochastic Gradient Descent
 
--   Pick an example $x^{n}$, consider gradient about data $n$.
+-   Pick an example $x^{n}​$, consider gradient about data $n​$.
 
 #### Feature Scaling
 
@@ -102,4 +111,32 @@ $\theta^{t + 1} = \theta^{t} - \eta \nabla L(\theta^t)$
     $$
 
 -   $\beta_1, \beta_2, \epsilon$ is often set to `0.9, 0.9999, 1e-8` respectively.
+
+## Lecture 6 - Brief Introduction of Deep Learning
+
+### Three Steps for Deep Learning
+
+1. Neural network structure (a function set)
+  - Deep = *Many hidden layers*
+  - Given $\mathbf{x}^n$, output $\mathbf{y}^n$, via NN with parameters $\theta$.
+2. Goodness of function
+  - Cross Entropy
+  - $L(\theta) = \sum_{n = 1}^N C^n(\theta)$
+3. Pick the best function
+    -   Based on gradient descent
+    -   Backpropagation
+
+## Lecture 7 - Backpropagation
+
+It's simply *gradient descent*
+
+#### Forward Pass
+
+Calculate each output of neuron.
+
+#### Backward Pass
+
+Calculate each partial derivative from back to front.
+
+
 
