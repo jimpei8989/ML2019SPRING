@@ -112,6 +112,165 @@ $\theta^{t + 1} = \theta^{t} - \eta \nabla L(\theta^t)$
 
 -   $\beta_1, \beta_2, \epsilon$ is often set to `0.9, 0.9999, 1e-8` respectively.
 
+## Lecture 4 - Classification
+
+### Ideal Alternatives
+
+-   Function (Model)
+    $$
+    f(x) = 
+    \begin{cases}
+    g(x) \ge 0.5, &\text{class 1} \\
+    else, &\text{class 2}
+    \end{cases}
+    $$
+
+-   Loss Function
+    $$
+    L(f) = \sum_{n} \delta(f(x^n) \ne \hat y^n)
+    $$
+    
+
+-   Find the best function
+
+    -   Perceptron, SVM
+
+### Gaussian Distribution
+
+$$
+f_{\mu, \Sigma}(x) = \frac{1}{(2 \pi)^{\frac{D}{2}}} \frac{1}{|\Sigma|\frac{1}{2}} \exp(-\frac{1}{2}(x-\mu)^T \Sigma^{-1}(x - \mu))
+$$
+
+-   Input: vector $x​$; Output: Probability of sampling $x​$.
+
+-   The shape of the function determines by *mean* $\mu​$ and *convariance matrix* $\Sigma​$.
+
+-   Likelihood
+    $$
+    L(\mu, \Sigma) = \prod_n f_{\mu, \Sigma}(x^n)
+    $$
+
+-   Maximum Likelihood
+    $$
+    \mu^*, \Sigma^* = \arg\max_{\mu, \Sigma} L(\mu, \Sigma)
+    $$
+
+    -   $\mu^* = \frac{1}{n} \sum_n x^n$
+    -   $\Sigma^* = \frac{1}{n}(x^n - \mu^*)(x^n - \mu^*)^T$
+
+-   Modifying Model
+
+    -   👎: Giving each Gaussian a covariance matrix increases the parameters of the model, may resulting in overfitting.
+    -   👉: Share a covariance matrix among the Gaussian distributions.
+    -   $\mu_1, \mu_2$ remains the same, $\Sigma = \Sigma^1 + \Sigma^2$. (Reference: Bishop, Ch 4.2.2)
+    -   The model becomes linear.
+
+-   Probability Distribution
+
+    -   For binary features, we may assume they are from *[Bernoulli Distributions](https://zh.wikipedia.org/wiki/伯努利分布)*
+    -   If we assume all the dimensions are independent, then using *Naive Bayes Classifier*.
+
+### Posterior Probability
+
+Rewrite $P(C_1|x)$ as
+$$
+\begin{align*}
+P(C_1 | x)
+&= \frac{P(x|C_1)P(C_1)}{P(x|C_1)P(C_1) + P(x|C_2)P(C_2)} \\
+&= \frac{1}{1 + \frac{P(x|C_2)P(C_2)}{P(x|C_1)P(C_1)}} \\
+&= \frac{1}{1 + \exp(-z)} = \sigma(z)
+\end{align*}
+$$
+, with $z = \ln \frac{P(x|C_2)P(C_2)}{P(x|C_1)P(C_1)}$. We can derive the sigmoid function $\sigma(z)$. And we can rewrite $z$ as
+$$
+\begin{cases}
+z &= (\mu^1 - \mu^2)^T \Sigma^{-1}x &\text{($\mathbf{w}^Tx$)}\\
+& -\frac{1}{2}(\mu^1)^T(\Sigma^1)^{-1}\mu^1 + \frac{1}{2}(\mu^2)^T(\Sigma^2)^{-1}\mu^2 + \ln \frac{N_1}{N_2}&\text{bias}
+\end{cases}
+$$
+Thus, $P(C_1|x) = \sigma(wx + b)​$
+
+## Lecture 5 - Logistic Regression
+
+1.  Function Set
+    $$
+    \begin{align*}
+    f_{w, b}(x) &= P_{w, b}(C_i | x) \\
+    &= \sigma(\sum_{i}w_ix_i + b)
+    \end{align*}
+    $$
+
+2.  Goodness of a Function
+
+    -   Likelihood
+        $$
+        L(w, b) = \prod_{i} (f_{w, b}(x^i) \text{ if $\hat y^i \in C_1$ else } 1 - f_{w, b}(x^i))
+        $$
+
+    -   Finding a $w^*, b^* = \arg\max_{w, b} L(w, b)$ is equivalent to finding $w^*, b^* = \arg \min_{w, b} -\ln L(w, b)$
+
+    -   Redefine $\hat y^n = 1 \text{ for class 1 else }  0$.
+        $$
+        \begin{align*}
+        - \ln L(w, b) = \sum_n -[\hat y^n \ln f_{w, b}(x^n) + (1 - \hat y) \ln(1 - f_{w, b}(x^n))]
+        \end{align*}
+        $$
+
+    -   Cross entropy between two Berboulli distribution
+
+        -   Distribution p: $p(x = 1) = \hat y^n​$, $p(x = 0) = 1 - \hat y^n​$
+        -   Distribution q: $q(x = 1) = f(x^n)$, $p(x = 0) = 1 - f(x^n)$
+        -   Cross entropy between p, q $H(p, q)$
+        -   Cross entropy $\rightarrow 0$ if the two distribution are similar.
+
+    -   Loss function
+        $$
+        \begin{align*}
+        L(f) &= \sum_nC(f(x^n), \hat y^n)
+        \end{align*}
+        $$
+        , where $C​$ is cross entropy.
+
+3.  Find the best function
+    $$
+    \begin{align*}
+    \frac{\part\ln f_{w, b}(x)}{\part w_i} &=
+    \sum_n -(\hat y - f_{w, b}(x)) x_i
+    \end{align*}
+    $$
+
+    -   $\frac{\part \sigma(z)}{z} = \sigma(z) (1 - \sigma(z))$
+
+### Discriminative v.s. Generative
+
+-   They share the same function set if the covariance matrix is shared among the distributions.
+-   Discriminative: $P(C_1 | x)$, find $\mathbf w, b$ with logistic regression.
+-   Generative: $\sigma(\mathbf w x + b)$, find $\mu^1, \mu^2, \Sigma^{-1}$.
+    -   $\mathbf w^T = (\mu^1 + \mu^2)^T \Sigma^{-1}$
+    -   $b = \frac{-1}{2}(\mu^1)^T(\Sigma)^{-1}\mu^1 + \frac{-1}{2}(\mu^2)^T(\Sigma)^{-1}\mu^2 + \ln \frac{N_1}{N_2}​$
+-   ==The same model, but different function is selected by the same training data.== Since we've made assumption on *generative models* to have Gaussian distribution.
+-   Benefit of Generative Model
+    -   Less training data is needed
+    -   More robust to the noice
+
+### Multi-class Classification
+
+>   Bishop P.209 - 210
+
+Assume there are $m$ classes, for each class $i$ with $\mathbf w^i, b_i$, calculate $z_i = \mathbf w^i \cdot x + b_i$
+
+-   Softmax
+    -   $T = \sum_i e^{z_i}$
+    -   For each class $i$, $y_i = e^{z_i} / T$
+    -   Maximum entropy
+-   Cross Entropy
+    -   $\sum_{i = 1}^{m} \hat{y_i} \ln y_i$
+
+### Limitation of Logistic Regression
+
+-   The boundary is a line
+    -   Solution: Feature transformation, not good enough since we don't know howto
+
 ## Lecture 6 - Brief Introduction of Deep Learning
 
 ### Three Steps for Deep Learning
@@ -137,6 +296,5 @@ Calculate each output of neuron.
 #### Backward Pass
 
 Calculate each partial derivative from back to front.
-
 
 
