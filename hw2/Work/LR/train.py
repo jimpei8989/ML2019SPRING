@@ -3,13 +3,13 @@ import numpy as np
 import pandas as pd
 
 def ReadTrainingData(path_X, path_Y):
-    rX = pd.read_csv(path_X).values.astype(np.float64)
+    rX = pd.read_csv(path_X).drop(["fnlwgt"], axis = 1).values.astype(np.float64)
     rY = pd.read_csv(path_Y).values.astype(np.float64).reshape((-1, 1))
 
     mean = np.mean(rX, axis = 0).reshape((1, -1))
     stdd = np.std(rX, axis = 0).reshape((1, -1))
     zX = (rX - mean) / stdd
-    return zX, rY, mean, stdd
+    return np.concatenate([np.ones((zX.shape[0], 1)), zX], axis = 1), rY, mean, stdd
 
 def Sigmoid(z):
     return 1 / (1 + np.exp(-z))
@@ -20,11 +20,11 @@ def Loss(w, X, Y):
 def RMSE(z):
     return (np.dot(z, z.T) / z.shape[0]) ** 0.5
 
-def GradientDescent(X, Y, eta = 1e-3, epochs = 1e5):
+def GradientDescent(X, Y, eta = 1e-3, epochs = 1e4):
     num, dim = X.shape
     w = np.zeros((1, dim))
 
-    beta1, beta2, eps = 0.9, 0.9999, 1e-8
+    beta1, beta2, eps = 0.9, 0.999, 1e-8
     m, v = np.float64(0), np.float64(0)
 
     for epoch in range(1, int(epochs) + 1):
@@ -40,7 +40,11 @@ def GradientDescent(X, Y, eta = 1e-3, epochs = 1e5):
     return w
 
 if __name__ == "__main__":
-    X, Y, mean, stdd = ReadTrainingData("../../data/X_train.csv", "../../data/Y_train.csv")
+    Xtrain_csv = "../../data/X_train.csv"
+    Ytrain_csv = "../../data/Y_train.csv"
+    np_file = "result.npz"
+
+    X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv)
     w = GradientDescent(X, Y)
-    np.savez("result.npz", w = w, mean = mean, stdd = stdd)
+    np.savez(np_file, w = w, mean = mean, stdd = stdd)
 
