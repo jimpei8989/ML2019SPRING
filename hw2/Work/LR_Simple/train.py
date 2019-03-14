@@ -3,14 +3,8 @@ import numpy as np
 import pandas as pd
 
 def ReadTrainingData(path_X, path_Y):
-    squaredTerms = ["age", "capital_gain", "capital_loss", "hours_per_week"]
-    dfX = pd.read_csv(path_X).drop(["fnlwgt"], axis = 1)
-    for t in squaredTerms:
-        dfX[t + "^2"] = dfX[t] ** 2
-    dfY = pd.read_csv(path_Y)
-
-    rX = dfX.values.astype(np.float64)
-    rY = dfY.values.astype(np.float64).reshape((-1, 1))
+    rX = pd.read_csv(path_X).drop(["fnlwgt"], axis = 1).values.astype(np.float64)
+    rY = pd.read_csv(path_Y).values.astype(np.float64).reshape((-1, 1))
 
     mean = np.mean(rX, axis = 0).reshape((1, -1))
     stdd = np.std(rX, axis = 0).reshape((1, -1))
@@ -51,7 +45,6 @@ if __name__ == "__main__":
     np_file = "result.npz"
 
     X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv)
-    print("Num, Dim = {}".format(X.shape))
     w = GradientDescent(X, Y)
     np.savez(np_file, w = w, mean = mean, stdd = stdd)
 
