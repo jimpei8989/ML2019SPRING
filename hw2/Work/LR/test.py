@@ -4,11 +4,12 @@ import pandas as pd
 
 #AMB_TEMP,CH4,CO,NMHC,NO,NO2,NOx,O3,PM10,PM2.5,RAINFALL,RH,SO2,THC,WD_HR,WIND_DIREC,WIND_SPEED,WS_HR
 
-def ReadTestingData(path, mean, stdd):
+def ReadTestingData(path, mean, stdd, Q = 2):
     squaredTerms = ["age", "capital_gain", "capital_loss", "hours_per_week"]
     dfX = pd.read_csv(path).drop(["fnlwgt"], axis = 1)
-    for t in squaredTerms:
-        dfX[t + "2"] = dfX[t] ** 2
+    for q in range(2, Q + 1):
+        for t in squaredTerms:
+            dfX[t + "^%d" % (q)] = dfX[t] ** q
 
     rX = dfX.values.astype(np.float64)
 
@@ -28,7 +29,7 @@ if __name__ == "__main__":
         mean = npf['mean']
         stdd = npf['stdd']
 
-    X, num = ReadTestingData(input_csv, mean, stdd)
+    X, num = ReadTestingData(input_csv, mean, stdd, Q = 3)
     Y = (Sigmoid(np.dot(X, w.T)) > 0.5).astype(int)
 
     df = pd.DataFrame(Y, columns = ["label"])

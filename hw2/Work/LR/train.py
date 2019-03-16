@@ -2,11 +2,12 @@ import sys
 import numpy as np
 import pandas as pd
 
-def ReadTrainingData(path_X, path_Y):
+def ReadTrainingData(path_X, path_Y, Q = 2):
     squaredTerms = ["age", "capital_gain", "capital_loss", "hours_per_week"]
     dfX = pd.read_csv(path_X).drop(["fnlwgt"], axis = 1)
-    for t in squaredTerms:
-        dfX[t + "^2"] = dfX[t] ** 2
+    for q in range(2, Q + 1):
+        for t in squaredTerms:
+            dfX[t + "^%d" % (q)] = dfX[t] ** q
     dfY = pd.read_csv(path_Y)
 
     rX = dfX.values.astype(np.float64)
@@ -31,7 +32,7 @@ def Loss(w, X, Y):
 def RMSE(z):
     return (np.dot(z, z.T) / z.shape[0]) ** 0.5
 
-def GradientDescent(X, Y, eta = 1e-3, epochs = 5e2, batchsize = 32):
+def GradientDescent(X, Y, eta = 1e-3, epochs = 5e3, batchsize = 128):
     num, dim = X.shape
     w = np.zeros((1, dim))
 
@@ -58,7 +59,7 @@ if __name__ == "__main__":
     Ytrain_csv = "../../data/Y_train.csv"
     np_file = "result.npz"
 
-    X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv)
+    X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv, Q = 3)
     print("Num, Dim = {}".format(X.shape))
     w = GradientDescent(X, Y)
     np.savez(np_file, w = w, mean = mean, stdd = stdd)
