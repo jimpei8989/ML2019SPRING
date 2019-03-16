@@ -59,7 +59,7 @@ if __name__ == "__main__":
     Ytrain_csv = "../../data/Y_train.csv"
     np_file = "result.npz"
 
-    X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv, Q = 3)
+    X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv, Q = 4)
     print("Num, Dim = {}".format(X.shape))
     w = GradientDescent(X, Y)
     np.savez(np_file, w = w, mean = mean, stdd = stdd)

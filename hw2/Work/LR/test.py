@@ -29,7 +29,7 @@ if __name__ == "__main__":
         mean = npf['mean']
         stdd = npf['stdd']
 
-    X, num = ReadTestingData(input_csv, mean, stdd, Q = 3)
+    X, num = ReadTestingData(input_csv, mean, stdd, Q = 4)
     Y = (Sigmoid(np.dot(X, w.T)) > 0.5).astype(int)
 
     df = pd.DataFrame(Y, columns = ["label"])
