@@ -31,18 +31,22 @@ def Sigmoid(z):
 def RMSE(z):
     return (np.dot(z, z.T) / z.shape[0]) ** 0.5
 
-def Loss(w, X, Y):
+def CrossEntropy(w, X, Y):
+    def C(w, x, y):
+        return np.log(np.dot(x, w.T)) if y[0] == 1 else np.log(1 - np.dot(x, w.T))
+    return -np.sum(C(w, X, Y))
+
+def Accuracy(w, X, Y):
     return np.mean((Sigmoid(np.dot(X, w.T)) > 0.5) == Y)
 
-def Predict(W, X, Y):
-    return (np.sum(Sigmoid(np.dot(X, W.T)), axis = 1) > 0.5).astype(np.float64).reshape((-1, 1))
+def Predict(W, X):
+    return np.sum(Sigmoid(np.dot(X, W.T)), axis = 1).reshape((-1, 1))
 
 def LOSS(W, X, Y):
-    return np.mean(Predict(W, X, Y) == Y)
+    return np.mean((Predict(W, X) > 0.5) == Y)
 
 def GradientDescent(X, Y, eta = 1e-3, epochs = 1e3, batchsize = 256):
     num, dim = X.shape
-    print("\tStart GD, num = %d" % (num))
     w = np.zeros((1, dim))
 
     beta1, beta2, eps = 0.9, 0.999, 1e-8
@@ -60,7 +64,7 @@ def GradientDescent(X, Y, eta = 1e-3, epochs = 1e3, batchsize = 256):
             w -= eta / (np.sqrt(vhat) + eps) * mhat
 
         if epoch % 100 == 0:
-            print("\t- Epoch: %6d, loss = %f, RMSE(Grad) = %f" % (epoch, Loss(w, X, Y), RMSE(grad)))
+            print("\t- Epoch: %6d, CrossEntropy = %f, RMSE(Grad) = %f" % (epoch, CrossEntropy(w, X, Y), RMSE(grad)))
     return w
 
 if __name__ == "__main__":
@@ -82,16 +86,10 @@ if __name__ == "__main__":
     for t in range(5):
         print("\n" + "> The %d time boosting" % (t))
 
-        PredY = Predict(W, trainX, trainY)
-        tY = trainY - PredY if t != 0 else trainY
+        PredY = Predict(W, trainX)
+        tY = trainY if t == 0 else trainY - PredY
 
-        #  if t == 0:
-        #      tX, tY = trainX, trainY
-        #  else:
-        #      selected = (Predict(W, trainX, trainY) != trainY).reshape(-1)
-        #      tX, tY = trainX[selected, :],[selected, :]
-
-        w = GradientDescent(trainX, tY, epochs = 100)
+        w = GradientDescent(trainX, tY)
         W = np.append(W, w, axis = 0)
         print("> End of %d time boosting, Etrain = %f, Evalid = %f" % (t, LOSS(W, trainX, trainY), LOSS(W, validX, validY)))
 
