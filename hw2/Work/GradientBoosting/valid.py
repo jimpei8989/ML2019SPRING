@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import pickle as pk
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import cross_val_score
 
 def ReadTrainingData(path_X, path_Y, Q = 2):
     squaredTerms = ["age", "capital_gain", "capital_loss", "hours_per_week"]
@@ -23,27 +24,21 @@ def ReadTrainingData(path_X, path_Y, Q = 2):
     mean = np.mean(rX, axis = 0).reshape((1, -1))
     stdd = np.std(rX, axis = 0).reshape((1, -1))
     zX = (rX - mean) / stdd
-    return np.concatenate([np.ones((zX.shape[0], 1)), zX], axis = 1), rY, mean, stdd
+    return np.concatenate([np.ones((zX.shape[0], 1)), zX], axis = 1), rY.reshape(-1), mean, stdd
 
 
 if __name__ == "__main__":
+    lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
     Xtrain_csv = "../../data/X_train.csv"
     Ytrain_csv = "../../data/Y_train.csv"
-    np_file = "result.npz"
 
     X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv, Q = 1)
 
-    num, dim = X.shape[0] * 3 // 4, X.shape[1]
+    etas = [10 ** -(k / 4) for k in range(2, 5)]
+    depths = [5, 6, 7]
     
-    trainX, trainY = X[:num, :], Y[:num, :].reshape(-1)
-    validX, validY = X[num:, :], Y[num:, :].reshape(-1)
-
-    eta = 1e-1
-    clf = GradientBoostingClassifier(n_estimators = 100, learning_rate = eta, max_depth = 5, random_state = 31415926).fit(trainX, trainY)
-
-    print(clf.score(trainX, trainY))
-    print(clf.score(validX, validY))
-
-    np.savez(np_file, mean = mean, stdd = stdd)
-    with open("model.pkl", "wb") as f:
-        pk.dump(clf, f) 
+    for eta in etas:
+        for d in depths:
+            clf = GradientBoostingClassifier(n_estimators = 127, learning_rate = eta, max_depth = d, random_state = lucky_num)
+            scores = cross_val_score(clf, X, Y, cv = 5, scoring = 'accuracy', n_jobs = 8)
+            print("- eta = %f, depth = %d, Mean = %.8f, Min = %.8f" % (eta, d, np.mean(scores), np.min(scores)))

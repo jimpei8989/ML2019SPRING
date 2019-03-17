@@ -45,7 +45,7 @@ def Predict(W, X):
 def LOSS(W, X, Y):
     return np.mean((Predict(W, X) > 0.5) == Y)
 
-def GradientDescent(X, Y, eta = 1e-3, epochs = 1e3, batchsize = 256):
+def GradientDescent(X, Y, eta = 1e-4, epochs = 5e3, batchsize = 128):
     num, dim = X.shape
     w = np.zeros((1, dim))
 
@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
     print("Num, Dim = {}".format(X.shape))
 
-    for t in range(5):
+    for t in range(20):
         print("\n" + "> The %d time boosting" % (t))
 
         PredY = Predict(W, trainX)
