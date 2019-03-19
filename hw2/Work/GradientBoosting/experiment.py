@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv, Q = 1)
 
-    etas = [10 ** -(k / 4) for k in range(3, 6)]
+    etas = [0.01 * k  for k in range(9, 12)]
     depths = [4, 5, 6]
     
     for eta in etas:
