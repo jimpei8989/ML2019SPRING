@@ -35,10 +35,12 @@ if __name__ == "__main__":
     X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv, Q = 1)
 
     etas = [0.01 * k  for k in range(9, 12)]
-    depths = [4, 5, 6]
+    depths = [5, 6]
+    n_ests = [89, 127, 179]
     
     for eta in etas:
         for d in depths:
-            clf = GradientBoostingClassifier(n_estimators = 127, learning_rate = eta, max_depth = d, random_state = lucky_num)
-            scores = cross_val_score(clf, X, Y, cv = 5, scoring = 'accuracy', n_jobs = -1)
-            print("- eta = %f, depth = %d, Mean = %.8f, Min = %.8f" % (eta, d, np.mean(scores), np.min(scores)))
+            for n_est in n_ests:
+                clf = GradientBoostingClassifier(n_estimators = n_est, learning_rate = eta, max_depth = d, random_state = lucky_num)
+                scores = cross_val_score(clf, X, Y, cv = 5, scoring = 'accuracy', n_jobs = 5)
+                print("- eta = %.4f, depth = %d, n_estimators = %3d, Mean = %.8f, Min = %.8f" % (eta, d, n_est, np.mean(scores), np.min(scores)))
