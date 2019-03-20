@@ -38,7 +38,7 @@ if __name__ == "__main__":
     trainNum = X.shape[0]
     trainX, trainY = X[:trainNum,:], Y[:trainNum]
     
-    clf = SVC(C = 10, kernel = "linear", probability = True, random_state = lucky_num).fit(trainX, trainY)
+    clf = SVC(C = 10, kernel = "rbf", gamma = 'scale',probability = True, random_state = lucky_num).fit(trainX, trainY)
 
     print("Training Accuracy: %.8f" % (clf.score(X, Y)))
 
