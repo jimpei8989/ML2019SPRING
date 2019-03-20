@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import pickle as pk
 from sklearn.svm import SVC
+from sklearn.model_selection import cross_val_score
 
 def ReadTrainingData(path_X, path_Y, Q = 2):
     squaredTerms = ["age", "capital_gain", "capital_loss", "hours_per_week"]

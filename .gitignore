@@ -1,6 +1,8 @@
 *.swp
 *.swo
 *.csv
+__pycache__
 data/
 .DS_Store
+venv/
 Bishop-PatternRecognitionAndMachineLearning-Springer2006.pdf

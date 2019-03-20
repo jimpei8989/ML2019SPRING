@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv, Q = 1)
 
-    trainNum = 10000
+    trainNum = 1000
     trainX, trainY = X[:trainNum,:], Y[:trainNum]
     
     clf = SVC(C = 10, kernel = "linear", probability = True, random_state = lucky_num).fit(trainX, trainY)
