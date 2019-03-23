@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv, Q = 1)
     
-    clf = GradientBoostingClassifier(n_estimators = 127, learning_rate = 0.1, max_depth = 5, random_state = lucky_num).fit(X, Y)
+    clf = GradientBoostingClassifier(n_estimators = 127, learning_rate = 0.1, max_depth = 6, random_state = lucky_num).fit(X, Y)
 
     print("Training Accuracy: %.8f" % (clf.score(X, Y)))
 
