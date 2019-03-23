@@ -28,7 +28,7 @@ if __name__ == "__main__":
     with open("model.pkl", "rb") as f:
         clf = pk.load(f)
 
-    X, num = ReadTestingData(input_csv, mean, stdd, Q = 1)
+    X, num = ReadTestingData(input_csv, mean, stdd, Q = 3)
     Y = clf.predict(X).astype(int)
 
     df = pd.DataFrame(Y, columns = ["label"])

@@ -33,9 +33,9 @@ if __name__ == "__main__":
     Ytrain_csv = "../../data/Y_train.csv"
     np_file = "result.npz"
 
-    X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv, Q = 1)
+    X, Y, mean, stdd = ReadTrainingData(Xtrain_csv, Ytrain_csv, Q = 3)
     
-    clf = GradientBoostingClassifier(n_estimators = 127, learning_rate = 0.1, max_depth = 6, random_state = lucky_num).fit(X, Y)
+    clf = GradientBoostingClassifier(n_estimators = 173, learning_rate = 0.05, max_depth = 6, random_state = lucky_num).fit(X, Y)
 
     print("Training Accuracy: %.8f" % (clf.score(X, Y)))
 
