@@ -13,8 +13,8 @@ NP_FILE="$(pwd)/Reproduce/Simple/result.npz"
 # # Train
 # python3 ${TRAIN_FILE} ${TRAIN_CSV} ${NP_FILE}
 
-# Public Score: 5.71999
-# Private Score: 7.27313
+# Public Score:     5.71999
+# Private Score:    7.27313
 
 # Test (Generate output)
 python3 ${TEST_FILE} ${NP_FILE} ${INPUT_CSV} ${OUTPUT_CSV}
