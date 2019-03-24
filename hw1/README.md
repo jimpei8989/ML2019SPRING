@@ -2,6 +2,10 @@
 
 ###### By: Wu-Jun Pei(B06902029)
 
+### Homework Website
+
+-   [Homework Website](https://ntumlta2019.github.io/ml-web-hw1/)
+
 ### Kaggle
 
 -   [Kaggle Website](https://www.kaggle.com/c/ml2019spring-hw1)
