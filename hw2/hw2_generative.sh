@@ -11,8 +11,8 @@ TrainPY="Reproduce/GenerativeModel/train.py"
 TestPY="Reproduce/GenerativeModel/test.py"
 dataNPY="Reproduce/GenerativeModel/data.npz"
 
-# Reproduce Training Step
-python3 ${TrainPY} ${XTrainCSV} ${YTrainCSV} ${dataNPY}
+# # Reproduce Training Step
+# python3 ${TrainPY} ${XTrainCSV} ${YTrainCSV} ${dataNPY}
 
 # Predict Step
 python3 ${TestPY} ${XTestCSV} ${PredictCSV} ${dataNPY}
