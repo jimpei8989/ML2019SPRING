@@ -1,0 +1,5 @@
+numpy >= 1.14
+pandas >= 0.24.1
+Pytorch == 1.0.1
+Tensorflow == 1.12.0
+Keras == 2.2.4
