@@ -44,6 +44,9 @@ if __name__ == "__main__":
     
     model.fit(X, Y, batch_size = 128, epochs = 20, verbose = 1, validation_split = 0.1)
 
+    with open("model.pkl", 'wb') as f:
+        pickle.dump(model, f)
+
     score = model.evaluate(X, Y, verbose=0)
     print('Train loss:', score[0])
     print('Train accuracy:', score[1])
