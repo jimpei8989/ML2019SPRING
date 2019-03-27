@@ -24,20 +24,25 @@ if __name__ == "__main__":
     X, Y, num, Xdim, Ydim = ReadTrainingData(trainCSV)
 
     model = Sequential()
-    model.add(Conv2D(filters =  64, kernel_size = (4, 4), strides = (2, 2), input_shape = (48, 48, 1)))
+    model.add(Conv2D(filters = 128, kernel_size = (4, 4), input_shape = (48, 48, 1)))
+    model.add(Conv2D(filters = 128, kernel_size = (4, 4)))
     model.add(MaxPooling2D(pool_size = (3, 3)))
-    #  model.add(Conv2D(filters = 128, kernel_size = (4, 4), strides = (2, 2)))
-    #  model.add(MaxPooling2D(pool_size = (3, 3)))
+    model.add(Conv2D(filters = 256, kernel_size = (4, 4)))
+    model.add(Conv2D(filters = 256, kernel_size = (4, 4)))
+    model.add(MaxPooling2D(pool_size = (3, 3)))
+
     model.add(Flatten())
-    model.add(Dense(128, activation="relu"))
-    #  model.add(Dense(128, activation="relu")
+    model.add(Dense(2048, activation="relu"))
+    model.add(Dense(1024, activation="relu"))
+    model.add(Dense(512, activation="relu"))
+    model.add(Dense(256, activation="relu"))
     model.add(Dense(Ydim, activation='softmax'))
 
     model.compile(loss=keras.losses.categorical_crossentropy,
                   optimizer=keras.optimizers.Adam(),
                   metrics=['accuracy'])
     
-    model.fit(X, Y, batch_size = 128, epochs = 20, verbose = 2, validation_split = 0.1)
+    model.fit(X, Y, batch_size = 128, epochs = 20, verbose = 1, validation_split = 0.1)
 
     score = model.evaluate(X, Y, verbose=0)
     print('Train loss:', score[0])
