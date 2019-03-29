@@ -77,7 +77,7 @@ if __name__ == "__main__":
     validGenerator = datagen.flow(X, Y, batch_size = 128, subset = "validation")
     trainNum, validNum = len(trainGenerator), len(validGenerator)
 
-    model.fit_generator( trainGenerator, steps_per_epoch = trainNum, validation_data = validGenerator, validation_steps = validNum, epochs = 300)
+    model.fit_generator( trainGenerator, steps_per_epoch = trainNum, validation_data = validGenerator, validation_steps = validNum, epochs = 500)
 
     model.save("model.h5")
 
