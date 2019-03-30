@@ -1,6 +1,7 @@
 *.swp
 *.swo
 *.csv
+*.h5
 __pycache__
 data/
 .DS_Store

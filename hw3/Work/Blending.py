@@ -15,11 +15,11 @@ if __name__ == "__main__":
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
     os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
-    testCSV = sys.argv[1] if len(sys.argv) == 3 else "../data/test.csv"
-    outputCSV = sys.argv[2] if len(sys.argv) == 3 else "./predict2.csv"
+    testCSV = sys.argv[1]
+    outputCSV = sys.argv[2]
     X, num, Xdim, Ydim = ReadTestingData(testCSV)
 
-    modelPaths = ["ImageGenNN" + str(i) + "/model.h5" for i in [1, 2, 3, 4]]
+    modelPaths = ["ImageGenNN" + str(i) + "/model.h5" for i in [5]]
     print("Using model:", modelPaths)
 
     models = [load_model(m) for m in modelPaths]

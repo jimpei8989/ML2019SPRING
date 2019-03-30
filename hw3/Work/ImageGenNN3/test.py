@@ -13,14 +13,14 @@ def ReadTestingData(path):
 
 if __name__ == "__main__":
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
-    os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-    testCSV = sys.argv[1] if len(sys.argv) == 4 else "../../data/test.csv"
-    outputCSV = sys.argv[2] if len(sys.argv) == 4 else "./predict.csv"
-    summary = sys.argv[3] if len(sys.argv) == 4 else "./model.summary"
+    testCSV = sys.argv[1]
+    outputCSV = sys.argv[2]
+    modelH5 = sys.argv[3]
     X, num, Xdim, Ydim = ReadTestingData(testCSV)
 
-    model = load_model("model.h5")
+    model = load_model(modelH5)
 
     Y = np.argmax(model.predict(X), axis = 1)
 
@@ -28,5 +28,3 @@ if __name__ == "__main__":
     df.insert(loc = 0, column = "id",value = [i for i in range(num)])
     df.to_csv(outputCSV, index = False)
 
-    with open(summary, "w+") as f:
-        model.summary(print_fn = print(file = f))

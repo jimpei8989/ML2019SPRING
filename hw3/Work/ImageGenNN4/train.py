@@ -27,7 +27,9 @@ if __name__ == "__main__":
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
     os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
-    trainCSV = sys.argv[1] if len(sys.argv) == 2 else "../../data/train.csv"
+    trainCSV = sys.argv[1]
+    modelH5 = sys.argv[2]
+
     X, Y, num, Xdim, Ydim = ReadTrainingData(trainCSV)
 
     datagen = ImageDataGenerator(rotation_range = 20, width_shift_range=0.05, height_shift_range=0.05, horizontal_flip=True, validation_split = 0.1)
@@ -78,7 +80,7 @@ if __name__ == "__main__":
 
     model.fit_generator(trainGenerator, steps_per_epoch = trainNum, validation_data = validGenerator, validation_steps = validNum, epochs = 500)
 
-    model.save("model.h5")
+    model.save(modelH5)
 
     score = model.evaluate(X, Y, verbose=0)
     print('Train loss:', score[0])
