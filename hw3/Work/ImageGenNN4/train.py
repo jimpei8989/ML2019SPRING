@@ -8,7 +8,7 @@ np.random.seed(50756711264384381850616619995309447969109689825336919605444730053
 from keras.models import Sequential
 from keras.preprocessing.image import ImageDataGenerator
 from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv2D, MaxPooling2D, ReLU, LeakyReLU, BatchNormalization, GaussianNoise
+from keras.layers import Conv2D, MaxPooling2D, Activation, ReLU, LeakyReLU, BatchNormalization, GaussianNoise
 from keras.regularizers import l1, l2
 from keras.losses import categorical_crossentropy
 from keras.optimizers import Adam
@@ -36,8 +36,8 @@ if __name__ == "__main__":
     datagen.fit(X)
 
     model = Sequential()
-    model.add(Conv2D(filters =  64, kernel_size = (5, 5), input_shape = (48, 48, 1), padding='same'))
-    model.add(Conv2D(filters =  96, kernel_size = (5, 5), padding='same'))
+    model.add(Conv2D(filters = 128, kernel_size = (5, 5), input_shape = (48, 48, 1), padding='same'))
+    model.add(Conv2D(filters = 128, kernel_size = (5, 5), padding='same'))
     model.add(Conv2D(filters = 128, kernel_size = (3, 3), padding='same'))
     model.add(BatchNormalization())
     model.add(MaxPooling2D(pool_size = (2, 2)))
@@ -52,21 +52,20 @@ if __name__ == "__main__":
     model.add(LeakyReLU(alpha = 0.3))
     model.add(Dropout(0.2))
 
-    model.add(Conv2D(filters = 512, kernel_size = (5, 5), padding='same'))
-    model.add(Conv2D(filters = 512, kernel_size = (3, 3), padding='same'))
-    model.add(BatchNormalization())
-    model.add(MaxPooling2D(pool_size = (2, 2)))
-    model.add(ReLU())
-    model.add(Dropout(0.3))
+    #  model.add(Conv2D(filters = 512, kernel_size = (3, 3), padding='same'))
+    #  model.add(BatchNormalization())
+    #  model.add(MaxPooling2D(pool_size = (2, 2)))
+    #  model.add(ReLU())
+    #  model.add(Dropout(0.3))
 
     model.add(Flatten())
 
-    model.add(Dense(2048, kernel_regularizer=l2(5e-5)))
+    model.add(Dense(1536, kernel_regularizer=l2(1e-4)))
     model.add(BatchNormalization())
     model.add(ReLU())
     model.add(Dropout(0.5))
 
-    model.add(Dense(2048, kernel_regularizer=l2(5e-5)))
+    model.add(Dense(1536, kernel_regularizer=l2(1e-4)))
     model.add(BatchNormalization())
     model.add(ReLU())
     model.add(Dropout(0.5))
