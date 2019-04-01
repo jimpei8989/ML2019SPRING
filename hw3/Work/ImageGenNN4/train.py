@@ -2,13 +2,12 @@ import sys, os
 import numpy as np
 import pandas as pd
 import pickle 
-
 np.random.seed(50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32))
 
 from keras.models import Sequential
 from keras.preprocessing.image import ImageDataGenerator
 from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv2D, MaxPooling2D, Activation, ReLU, LeakyReLU, BatchNormalization, GaussianNoise
+from keras.layers import Conv2D, MaxPooling2D, ReLU, LeakyReLU, BatchNormalization, GaussianNoise
 from keras.regularizers import l1, l2
 from keras.losses import categorical_crossentropy
 from keras.optimizers import Adam
@@ -25,7 +24,7 @@ def ReadTrainingData(path):
 
 if __name__ == "__main__":
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
-    os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
     trainCSV = sys.argv[1]
     modelH5 = sys.argv[2]
@@ -36,38 +35,41 @@ if __name__ == "__main__":
     datagen.fit(X)
 
     model = Sequential()
-    model.add(Conv2D(filters = 128, kernel_size = (5, 5), input_shape = (48, 48, 1), padding='same'))
-    model.add(Conv2D(filters = 128, kernel_size = (5, 5), padding='same'))
-    model.add(Conv2D(filters = 128, kernel_size = (3, 3), padding='same'))
+    model.add(Conv2D(filters = 128, kernel_size = (3, 3), input_shape = (48, 48, 1), padding='same'))
+    model.add(Conv2D(filters = 192, kernel_size = (3, 3), padding='same'))
+    model.add(Conv2D(filters = 256, kernel_size = (3, 3), padding='same'))
+    model.add(GaussianNoise(0.1))
     model.add(BatchNormalization())
     model.add(MaxPooling2D(pool_size = (2, 2)))
-    model.add(LeakyReLU(alpha = 0.3))
-    model.add(GaussianNoise(0.1))
     model.add(Dropout(0.1))
 
-    model.add(Conv2D(filters = 256, kernel_size = (5, 5), padding='same'))
-    model.add(Conv2D(filters = 256, kernel_size = (3, 3), padding='same'))
+    model.add(Conv2D(filters = 384, kernel_size = (3, 3), padding='same'))
+    model.add(Conv2D(filters = 512, kernel_size = (3, 3), padding='same'))
     model.add(BatchNormalization())
     model.add(MaxPooling2D(pool_size = (2, 2)))
-    model.add(LeakyReLU(alpha = 0.3))
     model.add(Dropout(0.2))
 
-    #  model.add(Conv2D(filters = 512, kernel_size = (3, 3), padding='same'))
-    #  model.add(BatchNormalization())
-    #  model.add(MaxPooling2D(pool_size = (2, 2)))
-    #  model.add(ReLU())
-    #  model.add(Dropout(0.3))
+    model.add(Conv2D(filters = 768, kernel_size = (3, 3), padding='same'))
+    model.add(Conv2D(filters = 768, kernel_size = (3, 3), padding='same'))
+    model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size = (2, 2)))
+    model.add(Dropout(0.3))
 
     model.add(Flatten())
 
-    model.add(Dense(1536, kernel_regularizer=l2(1e-4)))
+    model.add(Dense(2048, kernel_regularizer=l2(1e-5)))
     model.add(BatchNormalization())
-    model.add(ReLU())
+    model.add(LeakyReLU(alpha = 0.3))
     model.add(Dropout(0.5))
 
-    model.add(Dense(1536, kernel_regularizer=l2(1e-4)))
+    model.add(Dense(2048, kernel_regularizer=l2(1e-5)))
     model.add(BatchNormalization())
-    model.add(ReLU())
+    model.add(LeakyReLU(alpha = 0.3))
+    model.add(Dropout(0.5))
+
+    model.add(Dense(2048, kernel_regularizer=l2(1e-5)))
+    model.add(BatchNormalization())
+    model.add(LeakyReLU(alpha = 0.3))
     model.add(Dropout(0.5))
 
     model.add(Dense(Ydim, activation='softmax'))

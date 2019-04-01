@@ -13,13 +13,13 @@ def ReadTestingData(path):
 
 if __name__ == "__main__":
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
-    os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
     testCSV = sys.argv[1]
     outputCSV = sys.argv[2]
     X, num, Xdim, Ydim = ReadTestingData(testCSV)
 
-    modelPaths = ["ImageGenNN" + str(i) + "/model.h5" for i in [5]]
+    modelPaths = ["ImageGenNN" + str(i) + "/model.h5" for i in [2, 3, 4, 5]]
     print("Using model:", modelPaths)
 
     models = [load_model(m) for m in modelPaths]
