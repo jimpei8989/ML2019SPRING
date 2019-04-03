@@ -13,7 +13,6 @@ def ReadTestingData(path):
 
 if __name__ == "__main__":
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
-    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
     testCSV = sys.argv[1]
     outputCSV = sys.argv[2]

@@ -22,7 +22,6 @@ def ReadTrainingData(path):
 
 if __name__ == "__main__":
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
-    os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
     trainCSV = sys.argv[1]
     modelH5 = sys.argv[2]
