@@ -19,10 +19,11 @@ wget --load-cookies cookies.txt -O ${fileName} \
 
 rm confirm.txt cookies.txt
 
-# Check MD5 Sum
+# Check file integrity with MD5 Sum
 
-tmpMD5=$(md5sum ${modelH5} | cut -d ' ' -f 1)
-if [[ ${modelMD5} != ${tmpMD5} ]]; then
+fileMD5=$(md5sum ${modelH5} | cut -d ' ' -f 1)
+
+if [[ ${modelMD5} != ${fileMD5} ]]; then
     echo -e "Warning:\tMD5 sum diff"
 else
     echo -e "MD5 sum check: OK!"

@@ -9,6 +9,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D, ReLU, LeakyReLU, BatchNormalization, GaussianNoise
 from keras.losses import categorical_crossentropy
+from keras.regularizers import l2
 from keras.optimizers import Adam
 
 def ReadTrainingData(path):
@@ -22,14 +23,13 @@ def ReadTrainingData(path):
 
 if __name__ == "__main__":
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
+    #  os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
     trainCSV = sys.argv[1]
     modelH5 = sys.argv[2]
+    historyPkl = sys.argv[3]
 
     X, Y, num, Xdim, Ydim = ReadTrainingData(trainCSV)
-
-    datagen = ImageDataGenerator(rotation_range = 20, width_shift_range=0.05, height_shift_range=0.05, horizontal_flip=True, validation_split = 0.1)
-    datagen.fit(X)
 
     model = Sequential()
     model.add(Conv2D(filters = 128, kernel_size = (5, 5), input_shape = (48, 48, 1), padding='same'))
@@ -63,21 +63,25 @@ if __name__ == "__main__":
     model.add(Flatten())
 
     model.add(Dense(1024))
+    #  model.add(Dense(1024, kernel_regularizer = l2(1e-4)))
     model.add(BatchNormalization())
     model.add(ReLU())
     model.add(Dropout(0.5))
 
     model.add(Dense(1024))
+    #  model.add(Dense(1024, kernel_regularizer = l2(1e-4)))
     model.add(BatchNormalization())
     model.add(ReLU())
     model.add(Dropout(0.5))
 
     model.add(Dense(512))
+    #  model.add(Dense(512, kernel_regularizer = l2(1e-4)))
     model.add(BatchNormalization())
     model.add(ReLU())
     model.add(Dropout(0.5))
 
     model.add(Dense(512))
+    #  model.add(Dense(512, kernel_regularizer = l2(1e-4)))
     model.add(BatchNormalization())
     model.add(ReLU())
     model.add(Dropout(0.5))
@@ -86,13 +90,18 @@ if __name__ == "__main__":
 
     model.compile(loss=categorical_crossentropy, optimizer=Adam(), metrics=['accuracy'])
             
+    datagen = ImageDataGenerator(rotation_range = 20, width_shift_range=0.05, height_shift_range=0.05, horizontal_flip=True, validation_split = 0.1)
+    datagen.fit(X)
+    #  datagen.fit(X, seed = lucky_num)
     trainGenerator = datagen.flow(X, Y, batch_size = 128, subset = "training")
     validGenerator = datagen.flow(X, Y, batch_size = 128, subset = "validation")
     trainNum, validNum = len(trainGenerator), len(validGenerator)
 
-    model.fit_generator(trainGenerator, steps_per_epoch = trainNum, validation_data = validGenerator, validation_steps = validNum, epochs = 500)
+    history = model.fit_generator(trainGenerator, steps_per_epoch = trainNum, validation_data = validGenerator, validation_steps = validNum, epochs = 400)
 
     model.save(modelH5)
+    with open(historyPkl, 'wb') as f:
+        pickle.dump(history, f)
 
     score = model.evaluate(X, Y, verbose=0)
     print('Train loss:', score[0])
