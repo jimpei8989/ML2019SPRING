@@ -13,7 +13,8 @@ if __name__ == "__main__":
     np.random.seed(lucky_num)
     set_random_seed(lucky_num)
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+    #  os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+
     # To make the plt work on Meow
     plt.switch_backend('agg')
 
@@ -26,8 +27,8 @@ if __name__ == "__main__":
     layerNames = ["leaky_re_lu_1", "leaky_re_lu_2"]
     filterNumbers = [32, 48]
 
+    fig, ax = plt.subplots(8, 10, figsize = (16, 16))
     for idx, (layerName, filterNumber) in enumerate(zip(layerNames, filterNumbers)):
-        fig, ax = plt.subplots(filterNumber // 8, 8, figsize = (12, filterNumber // 4))
         fig.suptitle("Layer: {}".format(layerName), fontsize = 28)
         layerOutput = layerDict[layerName].output
 
@@ -51,8 +52,9 @@ if __name__ == "__main__":
                 vhat = v / (1 - (beta2 ** epoch))
                 inputImgData += eta / (np.sqrt(vhat) + eps) * mhat
 
-            ax[filterIndex // 8, filterIndex % 8].imshow(DeprocessImg(np.squeeze(inputImgData, axis = (0, 3))), cmap = "BuPu", interpolation='none')
-            ax[filterIndex // 8, filterIndex % 8].set_title("Filter {}".format(filterIndex))
-            ax[filterIndex // 8, filterIndex % 8].axis('off')
-        plt.savefig(outputDir + '/' + layerName + '.png', dpi = 150)
+            r, c = (filterIndex // 4, filterIndex % 4) if idx == 0 else (filterIndex // 6, filterIndex % 6 + 4)
+            ax[r, c].imshow(DeprocessImg(np.squeeze(inputImgData, axis = (0, 3))), cmap = "BuPu", interpolation='none')
+            ax[r, c].set_title("Filter {}".format(filterIndex))
+            ax[r, c].axis('off')
 
+    fig.savefig("%s/fig2_1.jpg" % (outputDir), dpi = 150)

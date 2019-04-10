@@ -22,7 +22,7 @@ if __name__ == "__main__":
     np.random.seed(lucky_num)
     set_random_seed(lucky_num)
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+    #  os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
     plt.switch_backend('agg')
 
@@ -58,5 +58,5 @@ if __name__ == "__main__":
         ax[2].set_title("Saliency within $2 * \sigma$")
         fig.colorbar(im, ax = ax[2])
 
-        fig.savefig("%s/fig1_%d.jpeg" % (outputDir, idx), dpi = 300)
+        fig.savefig("%s/fig1_%d.jpg" % (outputDir, idx), dpi = 150)
 

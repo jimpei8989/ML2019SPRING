@@ -23,9 +23,9 @@ if __name__ == "__main__":
     np.random.seed(lucky_num)
     set_random_seed(lucky_num)
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+    #  os.environ["CUDA_VISIBLE_DEVICES"] = "3"
     # To make the plt work on Meow
-    plt.switch_backend('agg')
+    #  plt.switch_backend('agg')
 
     modelH5 = sys.argv[1]
     trainCSV = sys.argv[2]
@@ -40,17 +40,17 @@ if __name__ == "__main__":
     filterNumbers = [32, 48]
     chosenInput = X[5607].reshape((1, 48, 48, 1))
 
+    fig, ax = plt.subplots(8, 10, figsize = (16, 16))
     for idx, (layerName, filterNumber) in enumerate(zip(layerNames, filterNumbers)):
-        #  plt.figure(idx)
-        fig, ax = plt.subplots(filterNumber // 8, 8, figsize = (12, filterNumber // 4))
         fig.suptitle("Layer: {}".format(layerName), fontsize = 28)
 
         iterate = K.function([model.input, K.learning_phase()], [layerDict[layerName].output])
         outputImg = iterate([chosenInput, 0])[0]
 
         for filterIndex in range(filterNumber):
-            ax[filterIndex // 8, filterIndex % 8].imshow(DeprocessImg(outputImg[0, :, :, filterIndex]), cmap = "BuPu", interpolation='none')
-            ax[filterIndex // 8, filterIndex % 8].set_title("Filter {}".format(filterIndex))
-            ax[filterIndex // 8, filterIndex % 8].axis('off')
-        plt.savefig(outputDir + '/' + layerName + '.png', dpi = 150)
+            r, c = (filterIndex // 4, filterIndex % 4) if idx == 0 else (filterIndex // 6, filterIndex % 6 + 4)
+            ax[r, c].imshow(DeprocessImg(outputImg[0, :, :, filterIndex]), cmap = "BuPu", interpolation='none')
+            ax[r, c].set_title("Filter {}".format(filterIndex))
+            ax[r, c].axis('off')
+    fig.savefig("%s/fig2_2.jpg" % (outputDir), dpi = 150)
 

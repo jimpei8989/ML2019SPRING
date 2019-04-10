@@ -28,11 +28,11 @@ def Lime(model, x, y, seed):
     return image
 
 if __name__ == "__main__":
-    os.environ["CUDA_VISIBLE_DEVICES"] = "3"
-
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
     np.random.seed(lucky_num)
     set_random_seed(lucky_num)
+
+    #  os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
     modelH5 = sys.argv[1]
     trainCSV = sys.argv[2]
@@ -45,5 +45,5 @@ if __name__ == "__main__":
 
     for label, idx in enumerate(chosenIndices):
         image = Lime(model, X[idx], label, lucky_num)
-        plt.imsave(outputDir + '/fig3_{}.png'.format(label), image)
+        plt.imsave("%s/fig3_%d.jpg" % (outputDir, label), image)
 
