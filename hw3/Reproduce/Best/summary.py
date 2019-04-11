@@ -7,7 +7,9 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
-    #  os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+
+    os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+    plt.switch_backend('agg')
 
     modelH5    = sys.argv[1]
     summaryTxt = sys.argv[2]
