@@ -26,7 +26,7 @@ if __name__ == "__main__":
     np.random.seed(lucky_num)
     set_random_seed(lucky_num)
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+    #  os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
     trainCSV = sys.argv[1]
     modelH5 = sys.argv[2]
