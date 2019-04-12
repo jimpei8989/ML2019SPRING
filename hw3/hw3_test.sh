@@ -9,12 +9,11 @@ echo $modelMD5
 # Reference: https://www.matthuisman.nz/2019/01/download-google-drive-files-wget-curl.html
 
 fileID="1naTq4Lnxk7xEqCnMV8awWeAAOaQ9Pktw"
-fileName="Reproduce/Best/model.h5"
 
 wget --save-cookies cookies.txt "https://docs.google.com/uc?export=download&id="${fileID} -O- \
          | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1/p' > confirm.txt
 
-wget --load-cookies cookies.txt -O ${fileName} \
+wget --load-cookies cookies.txt -O ${modelH5} \
          'https://docs.google.com/uc?export=download&id='${fileID}'&confirm='$(<confirm.txt)
 
 rm confirm.txt cookies.txt
