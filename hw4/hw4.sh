@@ -26,18 +26,17 @@ fi
 
 # Saliency Map
 echo -e "-> SaliencyMap"
-time python3 Prob1/SaliencyMap.py ${modelH5} ${trainCSV} ${outputDir}
+python3 Prob1/SaliencyMap.py ${modelH5} ${trainCSV} ${outputDir}
 
 # Filter Visualization
 echo -e "-> Filter Visualization"
-time python3 Prob2/FilterVisualize.py ${modelH5} ${outputDir}
+python3 Prob2/FilterVisualize.py ${modelH5} ${outputDir}
 
 # Output Visualization
 echo -e "-> Output Visualization"
-time python3 Prob2/OutputVisualize.py ${modelH5} ${trainCSV} ${outputDir}
+python3 Prob2/OutputVisualize.py ${modelH5} ${trainCSV} ${outputDir}
 
 # Lime
 echo -e "-> Lime"
-time python3 Prob3/Lime.py ${modelH5} ${trainCSV} ${outputDir}
-
+python3 Prob3/Lime.py ${modelH5} ${trainCSV} ${outputDir}
 
