@@ -14,7 +14,7 @@ def ReadTrainingData(path):
     return X / 255, Y, num, Xdim, Ydim
 
 if __name__ == "__main__":
-    os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
     np.random.seed(lucky_num)
@@ -26,13 +26,14 @@ if __name__ == "__main__":
     X, Y, num, Xdim, Ydim = ReadTrainingData(trainCSV)
 
     predictY = model.predict(X)
-
-    chosen = [np.argmax(predictY, axis = 0).reshape(-1)]
-    print(chosen)
+    chosenIndices = []
 
     for label in range(Ydim):
         candidates = [idx for idx in range(num) if Y[idx] == np.argmax(predictY[idx])]
-        chosen = sorted([(idx, predictY[idx, label]) for idx in candidates], key = lambda k: k[1], reverse = True)[0][0]
+        chosen = sorted([(idx, predictY[idx, label]) for idx in candidates], key = lambda k: k[1], reverse = True)[31][0]
+        #  chosen = np.random.choice(candidates)
+        chosenIndices.append(chosen)
         print(label, chosen)
 
+    print(chosenIndices)
 

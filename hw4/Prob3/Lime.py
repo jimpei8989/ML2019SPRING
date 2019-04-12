@@ -41,7 +41,7 @@ if __name__ == "__main__":
     model = load_model(modelH5)
     X, Y = ReadTrainingData(trainCSV)
 
-    chosenIndices = [9956, 6488, 8805, 82, 16245, 392, 672]
+    chosenIndices = [9956, 13248, 15253, 80, 25170, 583, 1879]
 
     for label, idx in enumerate(chosenIndices):
         image = Lime(model, X[idx], label, lucky_num)

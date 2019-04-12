@@ -10,12 +10,11 @@ from tensorflow import set_random_seed
 def ReadTrainingData(path):
     df = pd.read_csv(path)
     num, Xdim, Ydim = df.shape[0], 48 * 48, 7
+    print("Num = {}, Xdim = {}, Ydim = {}".format(num, Xdim, Ydim))
     X = np.concatenate([np.array([float(f) for f in x.split()]).reshape((1, 48, 48, 1)) for x in df['feature']], axis = 0) / 255
-    Y = df['label'].values.reshape(-1).astype(int)
-    return np.concatenate([X, X, X], axis = 3), to_categorical(Y) 
-
-def DeprocessImg(x):
-    return np.clip(np.clip((x - np.mean(x)) / (np.std(x) + 1e-5) * 0.1 + 0.5, 0, 1) * 255, 0, 255).astype('uint8')
+    Y = np.zeros((num, Ydim))
+    Y[np.arange(num), df['label'].values] = 1
+    return X, Y
 
 if __name__ == "__main__":
     lucky_num = 50756711264384381850616619995309447969109689825336919605444730053665222018857 % (2 ** 32)
@@ -23,8 +22,8 @@ if __name__ == "__main__":
     set_random_seed(lucky_num)
 
     #  os.environ["CUDA_VISIBLE_DEVICES"] = "3"
-
-    plt.switch_backend('agg')
+    #  plt.switch_backend('agg')
+    plt.subplots_adjust(wspace = 1.0)
 
     modelH5 = sys.argv[1]
     trainCSV = sys.argv[2]
@@ -33,28 +32,29 @@ if __name__ == "__main__":
     model = load_model(modelH5)
     X, Y = ReadTrainingData(trainCSV)
 
-    chosenIndices = [9956, 6488, 8805, 82, 16245, 392, 672]
+    chosenIndices = [19833, 9612, 24422, 28684, 21428, 2072, 23216]
     for idx, chosenIndex in enumerate(chosenIndices):
         fig, ax = plt.subplots(1, 3, figsize=(8, 4))
-        x, y = np.expand_dims(X[idx], axis = 0), np.expand_dims(Y[idx], axis = 0)
+        x, y = X[chosenIndex], Y[chosenIndex]
 
-        loss = K.categorical_crossentropy(y, model.output)
+        loss = K.categorical_crossentropy(np.expand_dims(y, axis = 0), model.output)
         grads = K.gradients(loss, model.input)[0]
-        func = K.function([model.input], [grads])
+        CalGrad = K.function([model.input], [grads])
 
-        print(func([x]))
-        saliency = func([x])
-
+        saliency = np.squeeze(np.abs(CalGrad([np.expand_dims(x, axis = 0)])[0]), axis = 0)
         m, s = np.mean(saliency), np.std(saliency)
 
-        ax[0].imshow(x)
+        ax[0].imshow(np.squeeze(x, axis = 2), cmap = "gray")
+        ax[0].axis('off')
         ax[0].set_title("Original")
 
-        im = ax[1].imshow(saliency, cmap = "jet")
+        im = ax[1].imshow(np.squeeze(saliency, axis = 2), cmap = "jet")
+        ax[1].axis('off')
         ax[1].set_title("SaliencyMap")
         fig.colorbar(im, ax = ax[1])
 
-        im = ax[2].imshow(np.clip(saliency, m - 2 * s, m + 2 * s), cmap = "binary")
+        im = ax[2].imshow(np.squeeze(np.clip(saliency, m - 2 * s, None), axis = 2), cmap = "afmhot")
+        ax[2].axis('off')
         ax[2].set_title("Saliency within $2 * \sigma$")
         fig.colorbar(im, ax = ax[2])
 

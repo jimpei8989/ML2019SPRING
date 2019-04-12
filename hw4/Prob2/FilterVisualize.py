@@ -14,9 +14,7 @@ if __name__ == "__main__":
     set_random_seed(lucky_num)
 
     #  os.environ["CUDA_VISIBLE_DEVICES"] = "3"
-
-    # To make the plt work on Meow
-    plt.switch_backend('agg')
+    #  plt.switch_backend('agg')
 
     modelH5 = sys.argv[1]
     outputDir = sys.argv[2]
@@ -28,15 +26,15 @@ if __name__ == "__main__":
     filterNumbers = [32, 48]
 
     fig, ax = plt.subplots(8, 10, figsize = (16, 16))
-    for idx, (layerName, filterNumber) in enumerate(zip(layerNames, filterNumbers)):
-        fig.suptitle("Layer: {}".format(layerName), fontsize = 28)
-        layerOutput = layerDict[layerName].output
+    fig.suptitle("%s (4 on the left)  and %s (6 on the right)" % (layerNames[0], layerNames[1]), fontsize = 28)
 
+    for idx, (layerName, filterNumber) in enumerate(zip(layerNames, filterNumbers)):
         for filterIndex in range(filterNumber):
+            layerOutput = layerDict[layerName].output
             loss = K.mean(layerOutput[:, :, :, filterIndex])
             grads = K.gradients(loss, model.input)[0]
             grads /= (K.sqrt(K.mean(K.square(grads))) + 1e-5)
-            iterate = K.function([model.input], [loss, grads])
+            CalGrads = K.function([model.input], [loss, grads])
 
             inputImgData = (np.random.random((1, 48, 48, 1)) * 20 + 118) / 255
 
@@ -45,7 +43,7 @@ if __name__ == "__main__":
             m, v = 0, 0
 
             for epoch in range(1, epochs + 1):
-                lossValue, gradsValue = iterate([inputImgData])
+                lossValue, gradsValue = CalGrads([inputImgData])
                 m = beta1 * m + (1 - beta1) * gradsValue
                 v = beta2 * v + (1 - beta2) * (gradsValue ** 2)
                 mhat = m / (1 - (beta1 ** epoch))

@@ -24,7 +24,6 @@ if __name__ == "__main__":
     set_random_seed(lucky_num)
 
     #  os.environ["CUDA_VISIBLE_DEVICES"] = "3"
-    # To make the plt work on Meow
     #  plt.switch_backend('agg')
 
     modelH5 = sys.argv[1]
@@ -41,11 +40,11 @@ if __name__ == "__main__":
     chosenInput = X[5607].reshape((1, 48, 48, 1))
 
     fig, ax = plt.subplots(8, 10, figsize = (16, 16))
-    for idx, (layerName, filterNumber) in enumerate(zip(layerNames, filterNumbers)):
-        fig.suptitle("Layer: {}".format(layerName), fontsize = 28)
+    fig.suptitle("%s (4 on the left)  and %s (6 on the right)" % (layerNames[0], layerNames[1]), fontsize = 28)
 
-        iterate = K.function([model.input, K.learning_phase()], [layerDict[layerName].output])
-        outputImg = iterate([chosenInput, 0])[0]
+    for idx, (layerName, filterNumber) in enumerate(zip(layerNames, filterNumbers)):
+        CalOutput = K.function([model.input, K.learning_phase()], [layerDict[layerName].output])
+        outputImg = CalOutput([chosenInput, 0])[0]
 
         for filterIndex in range(filterNumber):
             r, c = (filterIndex // 4, filterIndex % 4) if idx == 0 else (filterIndex // 6, filterIndex % 6 + 4)

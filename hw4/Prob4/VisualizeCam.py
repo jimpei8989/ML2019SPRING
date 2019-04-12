@@ -21,8 +21,8 @@ if __name__ == "__main__":
     np.random.seed(lucky_num)
     set_random_seed(lucky_num)
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-    plt.switch_backend('agg')
+    #  os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+    #  plt.switch_backend('agg')
 
     modelH5 = sys.argv[1]
     trainCSV = sys.argv[2]
