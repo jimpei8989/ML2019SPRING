@@ -56,5 +56,5 @@ if __name__ == "__main__":
         ax[2].bar(X, [pair[1] for pair in AttSorted], width = 0.4, tick_label = [Dict[str(pair[0])][1] for pair in AttSorted], color = '#ff69b4')
         ax[2].set_title('Attacked Prediction')
 
-        fig.savefig('Result_%03d.png' % (idx), dpi = 150)
+        fig.savefig('Prob4_Result_%03d.png' % (idx), dpi = 150)
 
