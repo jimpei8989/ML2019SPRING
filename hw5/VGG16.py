@@ -28,7 +28,7 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss().cuda()
     trans = transform.Compose([transform.ToTensor(), transform.Normalize(mean = Mean, std = Std)])
 
-    epsilon = 23 / 255 / 0.225
+    epsilon = 21 / 255 / 0.225
 
     for idx in range(200):
         Input = imread("%s/%03d.png" % (inputDir, idx))
