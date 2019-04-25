@@ -19,4 +19,5 @@ if __name__ == "__main__":
     for idx in range(200):
         Image = imread("%s/%03d.png" % (inputDir, idx))
         imsave("%s/%03d.png" % (outputDir, idx), GaussianBlur(Image, (5, 5), 0))
+        print("-> %03d" % (idx), end = '\r')
 
