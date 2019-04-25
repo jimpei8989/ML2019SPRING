@@ -32,3 +32,27 @@
 | Rank  | 13(11)  | 21(19)  |
 | Score | 0.87641 | 0.87483 |
 
+### Homework 3
+
+-   [Homework Website](https://ntumlta2019.github.io/ml-web-hw3/)
+-   [Kaggle Website](https://www.kaggle.com/c/ml2019spring-hw3)
+
+|       | Public  | Private |
+| ----- | ------- | ------- |
+| Rank  | 40(4)   | 45(41)  |
+| Score | 0.70771 | 0.69824 |
+
+### Homework 4
+
+-   [Homework Website](https://ntumlta2019.github.io/ml-web-hw4/)
+
+### Homework 5
+
+-   [Homework Website](https://ntumlta2019.github.io/ml-web-hw3/)
+-   [Kaggle Website](https://www.kaggle.com/c/ml2019spring-hw3)
+
+|              | Public |
+| ------------ | ------ |
+| Rank         | 22     |
+| Success Rate | 1.000  |
+| L-infinity   | 3.9550 |
