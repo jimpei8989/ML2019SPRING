@@ -19,16 +19,16 @@
 
 4.  **(1%) 請以 hw5_best.sh 的方法，visualize 任意三張圖片攻擊前後的機率圖 (分別取前三高的機率)。**
 
-    -   Image 042
+    -   Image042
         <img src="Report/Prob4_Result_042.png">
-    -   Image 066
+    -   Image066
         <img src="Report/Prob4_Result_066.png">
-    -   Image 176
+    -   Image176
         <img src="Report/Prob4_Result_176.png">
 
 5.  **(1%) 請將你產生出來的 adversarial img，以任一種 smoothing 的方式實作被動防禦 (passive defense)，觀察是否有效降低模型的誤判的比例。請說明你的方法，附上你防禦前後的 success rate，並簡要說明你的觀察。另外也請討論此防禦對原始圖片會有什麼影響。**
 
-    我使用的方法是 Gaussian Blur，使用的套件是 `opencv`，參數是 `ksize = 2`。他會把原始圖檔模糊化，大部分的圖檔在模糊化之後仍然是肉眼可區分的，但會讓部分的原始圖片 Predict 出不一樣的結果。
+    我使用的方法是 Gaussian Blur，使用的套件是 `opencv`，參數是 `ksize = 5`。他會把原始圖檔模糊化，大部分的圖檔在模糊化之後仍然是肉眼可區分的，但會讓部分的原始圖片 Predict 出不一樣的結果。
 
     總體而言，雖然他讓攻擊成功的比例減少約 60%，卻也判斷錯了約 15% 的照片；至於這個 trade-off 是否可接受，我認為則要探討到原本的 task 的性質，在此不多做討論。
 
