@@ -48,8 +48,8 @@
 
 ### Homework 5
 
--   [Homework Website](https://ntumlta2019.github.io/ml-web-hw3/)
--   [Kaggle Website](https://www.kaggle.com/c/ml2019spring-hw3)
+-   [JudgeBoi](http://140.112.42.213:22224) (May not be available)
+-   [HackMD](https://hackmd.io/s/SJnYbAOu4)
 
 |              | Public |
 | ------------ | ------ |
