@@ -2,6 +2,7 @@
 *.swo
 *.csv
 *.h5
+*.model
 __pycache__
 data/
 .DS_Store
