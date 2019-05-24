@@ -33,8 +33,8 @@ def main():
     print('---  End SVD  ---')
 
     K = 5
-    inputImg = imread(inputpath).astype('float').reshape(-1) - mean
-    outputImg = Process(np.dot(v[:K].T, np.dot(v[:K], inputImg)) + mean)
+    inputImg = imread(inputPath).astype('float').reshape(-1) - mean
+    outputImg = Process(np.dot(v[:K].T, np.dot(v[:K], inputImg)) + mean, originalShape)
     imsave(outputPath, outputImg)
 
 if __name__ == "__main__":
