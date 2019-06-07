@@ -1,5 +1,5 @@
 trainCSV=$1
 
-model="MNet/model.pkl"
+modelPath="MNet/model.pkl"
 
-python3
+python3 MNet/train.py ${trainCSV} ${modelPath}
