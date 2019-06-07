@@ -1,4 +1,6 @@
 testCSV=$1
-predCSV=$2
+predictCSV=$2
+modelPath="MNet/model.pkl"
 
+python3 MNet/test.py ${modelPath} ${testCSV} ${predictCSV}
 
